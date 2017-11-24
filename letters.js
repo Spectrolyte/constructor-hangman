@@ -6,10 +6,8 @@
 var Letter = function (letter, index) {
     // letter = one of letters of the current word
     this.letter = letter,
-    // index = array of index where the letter appears in the word
-    this.index = index,
     // guessed = boolean; if letter has been guessed correctly -- initially set to false
-    this.guess = false
+    this.guessed = false
 }
 
 module.exports = Letter;
