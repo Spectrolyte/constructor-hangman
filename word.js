@@ -1,16 +1,8 @@
 // Word: Used to create an object representing the current word the user is attempting to guess.
 // This should contain word specific logic and data.
 
-// helper function to generate a random index according to the word bank
-function getRandomNum () {
-    return Math.floor(Math.random() * wordBank.length);
-}
-
-// word bank of possible word choices
-var wordBank = ['hello','world','coding'];
-
 // takes in randomly chosen word from word bank
-function Word (word) {
+var Word = function (word) {
     // word = chosen word
     this.word = word,
     this.makeLetters = function () {
@@ -28,7 +20,4 @@ function Word (word) {
     this.guessed = false
 }
 
-// need to reassign this at every new round
-var currentWord = new Word(wordBank[getRandomNum()]);
-
-module.exports = currentWord;
+module.exports = Word;

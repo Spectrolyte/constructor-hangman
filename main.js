@@ -4,18 +4,32 @@
     // if yes, start the game
     // else, stop script
 
-// start of game
-    // pick random word
-        // have a word bank with related terms
-        // pick a word from word bank using a randomly generated number
-        // set the word to the current word -- use constructor
-            // word = chosen word
-            // placeholder = chosen word replaced with underscores
-            // guessed = boolean; if word has been guessed correctly -- initially set to false
-            // split up word into individual letters
-        // iterate through list of letters and create new objects for them -- store in array of objects
-            // if letter object already exists, add new index to index prop
-        // letter constructor
-            // letter = one of letters of the current word
-            // index = array of indexes where the letter appears in the word
-            // guessed = boolean; if letter has been guessed correctly -- initially set to false
+var Word = require('./word.js');
+var Letter = require('./letters.js');
+
+// helper function to generate a random index according to the word bank
+function getRandomNum () {
+    return Math.floor(Math.random() * wordBank.length);
+}
+
+// word bank of possible word choices
+var wordBank = ['hello','world','coding'];
+
+// current word user has to guess
+var currentWord = new Word(wordBank[getRandomNum()]);
+
+// letters of current word in array
+var letters = currentWord.makeLetters();
+// underscores in place of letter in array
+var placeholder = currentWord.makeUnderscores();
+
+// stores letter objects
+var letterData = [];
+
+// iterate through list of letters and create new objects for them -- store in array of objects
+for (var i=0; i < letters.length; i++) {
+    letterData.push(new Letter (letters[i], i));
+}
+
+console.log(letterData);
+console.log('hello');
