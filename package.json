@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Spectrolyte/constructor-hangman#readme",
   "dependencies": {
+    "chalk": "^2.3.0",
     "inquirer": "^4.0.0"
   }
 }

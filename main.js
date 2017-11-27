@@ -1,25 +1,21 @@
 // You must keep track of the user's remaining guesses and prompt the user if they would like to end the game if none remain.
 
-// when user enters game, ask if they would like to play
-    // if yes, start the game
-    // else, stop script
-
 var Word = require('./word.js');
 var Letter = require('./letters.js');
 var inquirer = require('inquirer');
+var chalk = require('chalk');
 
 // helper function to generate a random index according to the word bank
 function getRandomNum () {
     return Math.floor(Math.random() * wordBank.length);
 }
 
-
 // starting user stats
-var guesses = 10;
-var guessedLetters = [];
+var guesses;
+var guessedLetters;
 
 // word bank of possible word choices
-var wordBank = ['hello','world','coding'];
+var wordBank = ['mario','bowser','peach','luigi','daisy','toad','yoshi'];
 
 var currentWord;
 var letters;
@@ -60,7 +56,7 @@ function readyUp () {
     inquirer.prompt([
         {
             type: 'confirm',
-            message: 'Looks like you ran out of guesses. The word was: ' + currentWord.word + '. Would you like to play again?',
+            message: 'Looks like you ran out of guesses. The word was: ' + chalk.yellow(currentWord.word) + '. Would you like to play again?',
             name: 'confirm'
         }
     ]).then(function(data){
@@ -75,8 +71,6 @@ function readyUp () {
     })
 }
 
-// else if the word has been guessed correctly, display the word and ask to play again
-// else if the user doesn't have guesses left and the word hasn't been guessed yet, display word and ask to try again
 // only run this if user has guesses remaining and the word hasn't been guessed yet
 function play () {
     if (guesses > 0 && !currentWord.guessed) {
@@ -88,7 +82,7 @@ function play () {
                 name: 'guess'
             }
         ]).then(function(data){
-            var guess = data.guess;
+            var guess = data.guess.toLowerCase();
             console.log('=========================================');            
             // if user already guessed that letter, notify them and prompt again
             if (guessedLetters.includes(guess)) {
@@ -99,12 +93,13 @@ function play () {
             else if (!letters.includes(guess) && !guessedLetters.includes(guess)) {
                 guessedLetters.push(guess);
                 guesses--;
-                console.log('Incorrect!')
+                console.log(chalk.red('Incorrect!'));
                 console.log('Guesses remaining: ' + guesses);
                 play();
             }
             // else, check where the user's guess is in the word
             else {
+                console.log(chalk.green('Correct!'));
                 for (var i=0; i < letterData.length; i++) {
                     // if user's guess is in letterData and has not already been guessed, replace underscores in placeholder
                     if (guess === letterData[i].letter && !letterData[i].guessed) {
@@ -129,7 +124,7 @@ function play () {
     else {
         // if user has guesses remaining, reset stats and play again
         if (guesses > 0) {
-            console.log('You solved it! The word was: ' + currentWord.word + '. Here\'s the next word!');
+            console.log('You solved it! The word was: ' + chalk.yellow(currentWord.word) + '. Here\'s the next word!');
             reset();
             play();
         }
@@ -139,5 +134,3 @@ function play () {
         }
     }
 }
-
-// console.log('hello');
