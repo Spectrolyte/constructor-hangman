@@ -13,43 +13,67 @@ function getRandomNum () {
     return Math.floor(Math.random() * wordBank.length);
 }
 
-// word bank of possible word choices
-var wordBank = ['hello','worlld','codding'];
-
-// current word user has to guess
-var currentWord = new Word(wordBank[getRandomNum()]);
-
-// letters of current word in array
-var letters = currentWord.makeLetters();
-// underscores in place of letter in array
-var placeholder = currentWord.makeUnderscores();
-
-// stores letter objects
-var letterData = [];
-
-// iterate through list of letters and create new objects for them -- store in array of objects
-for (var i=0; i < letters.length; i++) {
-    letterData.push(new Letter (letters[i], i));
-}
 
 // starting user stats
 var guesses = 10;
 var guessedLetters = [];
 
-// inquirer.prompt([
-//     {
-//         type: 'confirm',
-//         message: 'Welcome to Hangman! Are you ready to play?',
-//         name: 'confirm'
-//     }
-// ]).then(function(data){
-//     if (data.confirm) {
-//         console.log(data.confirm);
-//     }
-//     else {
-//         console.log('hello');
-//     }
-// })
+// word bank of possible word choices
+var wordBank = ['hello','world','coding'];
+
+var currentWord;
+var letters;
+var placeholder;
+var letterData;
+
+// chooses new word and changes placeholder and letter data accordingly
+function reset () {
+    // current word user has to guess
+    currentWord = new Word(wordBank[getRandomNum()]);
+    // letters of current word in array
+    letters = currentWord.makeLetters();
+    // underscores in place of letter in array
+    placeholder = currentWord.makeUnderscores();
+    // stores letter objects
+    letterData = [];
+    // iterate through list of letters and create new objects for them -- store in array of objects
+    for (var i=0; i < letters.length; i++) {
+        letterData.push(new Letter (letters[i], i));
+    }
+    guesses = 10;
+    guessedLetters = [];
+}
+
+
+// welcome message when script is initially run
+console.log('Welcome to Hangman!');
+console.log('=========================================');
+console.log('You have 10 guesses to figure out the mystery word. Good luck!');
+console.log('=========================================');
+
+// starts the game
+reset();
+play();
+
+// asks user to play again if no guesses remain
+function readyUp () {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            message: 'Looks like you ran out of guesses. The word was: ' + currentWord.word + '. Would you like to play again?',
+            name: 'confirm'
+        }
+    ]).then(function(data){
+        if (data.confirm) {
+            console.log('Good luck!')
+            reset();
+            play();
+        }
+        else {
+            console.log('That\'s okay. We\'ll see you next time!');
+        }
+    })
+}
 
 // else if the word has been guessed correctly, display the word and ask to play again
 // else if the user doesn't have guesses left and the word hasn't been guessed yet, display word and ask to try again
@@ -65,6 +89,7 @@ function play () {
             }
         ]).then(function(data){
             var guess = data.guess;
+            console.log('=========================================');            
             // if user already guessed that letter, notify them and prompt again
             if (guessedLetters.includes(guess)) {
                 console.log('You already guessed that.');
@@ -74,6 +99,7 @@ function play () {
             else if (!letters.includes(guess) && !guessedLetters.includes(guess)) {
                 guessedLetters.push(guess);
                 guesses--;
+                console.log('Incorrect!')
                 console.log('Guesses remaining: ' + guesses);
                 play();
             }
@@ -92,8 +118,6 @@ function play () {
                     return currentVal.guessed === true;
                 });
 
-                console.log(hasBeenGuessed);
-
                 if (hasBeenGuessed) {
                     currentWord.guessed = true;
                 }
@@ -103,10 +127,17 @@ function play () {
         })
     }
     else {
-        console.log('gg');
+        // if user has guesses remaining, reset stats and play again
+        if (guesses > 0) {
+            console.log('You solved it! The word was: ' + currentWord.word + '. Here\'s the next word!');
+            reset();
+            play();
+        }
+        // if user ran out of guesses, ask them if he/she wants to play again.
+        else {
+            readyUp();
+        }
     }
 }
-
-play();
 
 // console.log('hello');
